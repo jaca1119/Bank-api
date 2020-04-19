@@ -1,15 +1,15 @@
 package com.itvsme.bank.models.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.itvsme.bank.models.account.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class UserApp implements UserDetails
@@ -19,11 +19,16 @@ public class UserApp implements UserDetails
     private Long id;
 
     private String username;
+    @JsonIgnore
     private String password;
     private String email;
     private String role;
+    @JsonIgnore
     private boolean isEnabled;
 
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "USER_ID")
+    private List<Account> accounts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
@@ -110,5 +115,29 @@ public class UserApp implements UserDetails
     public void setEnabled(boolean enabled)
     {
         isEnabled = enabled;
+    }
+
+    public List<Account> getAccounts()
+    {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts)
+    {
+        this.accounts = accounts;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "UserApp{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", accounts=" + accounts +
+                '}';
     }
 }

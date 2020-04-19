@@ -14,14 +14,10 @@ import java.util.Optional;
 public class RegistrationController
 {
     private RegistrationService registrationService;
-    private RegistrationTokenRepository tokenRepository;
-    private UserAppRepository userAppRepository;
 
-    public RegistrationController(RegistrationService registrationService, RegistrationTokenRepository tokenRepository, UserAppRepository userAppRepository)
+    public RegistrationController(RegistrationService registrationService)
     {
         this.registrationService = registrationService;
-        this.tokenRepository = tokenRepository;
-        this.userAppRepository = userAppRepository;
     }
 
     @PostMapping("/register")
@@ -43,19 +39,15 @@ public class RegistrationController
     @GetMapping("/token")
     public String signUp(@RequestParam String value)
     {
-        Optional<RegistrationToken> registrationToken = tokenRepository.findByValue(value);
-
-        if (registrationToken.isPresent())
+        try
         {
-            UserApp userApp = registrationToken.get().getUserApp();
-            userApp.setEnabled(true);
-            userAppRepository.save(userApp);
+            registrationService.activateUser(value);
 
-            return "Account enabled!";
-        }
-        else
+            return "Account enabled. You can log in now";
+        } catch (AccountEnablingException e)
         {
-            return "Something went wrong with account enabling.";
+            return e.getMessage();
         }
+
     }
 }
