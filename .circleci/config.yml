@@ -13,6 +13,13 @@ jobs:
   deploy:
     docker:
       - image: circleci/buildpack-deps:trusty
+        environment:
+          JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+          REGISTRATION_URL: ${REGISTRATION_URL}
+          MAIL_HOST: ${MAIL_HOST}
+          MAIL_PORT: spring.mail.port=${MAIL_PORT}
+          MAIL_USERNAME: ${MAIL_USERNAME}
+          MAIL_PASSWORD: ${MAIL_PASSWORD}
     steps:
       - checkout
       - run:
