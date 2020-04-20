@@ -13,7 +13,14 @@ workflows:
   build_deploy:
     jobs:
       - maven/test:
-              executor: java-version
+          executor: java-version
+          environment:
+            JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+            REGISTRATION_URL: ${REGISTRATION_URL}
+            MAIL_HOST: ${MAIL_HOST}
+            MAIL_PORT: spring.mail.port=${MAIL_PORT}
+            MAIL_USERNAME: ${MAIL_USERNAME}
+            MAIL_PASSWORD: ${MAIL_PASSWORD}
       - heroku/deploy-via-git:
           requires:
             - maven/test
