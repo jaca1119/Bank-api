@@ -1,25 +1,34 @@
-version: 2.1
-
-executors:
-  java-version:
-    docker:
-      - image: 'cimg/openjdk:11.0.7'
-
-orbs:
-  maven: circleci/maven@1.0.0
-  heroku: circleci/heroku@1.0.1
-
+version: 2
 jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk
+
+    working_directory: ~/bank
+
+    environment:
+      MAVEN_OPTS: -Xmx3200m
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+      - run: mvn test
+
   deploy:
     docker:
       - image: circleci/buildpack-deps:trusty
-        environment:
-          JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-          REGISTRATION_URL: ${REGISTRATION_URL}
-          MAIL_HOST: ${MAIL_HOST}
-          MAIL_PORT: spring.mail.port=${MAIL_PORT}
-          MAIL_USERNAME: ${MAIL_USERNAME}
-          MAIL_PASSWORD: ${MAIL_PASSWORD}
     steps:
       - checkout
       - run:
@@ -29,14 +38,14 @@ jobs:
             git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
-  build_deploy:
+  version: 2
+  build-deploy:
     jobs:
-      - maven/test:
-          executor: java-version
+      - build
       - deploy:
           requires:
-            - maven/test
+            - build
           filters:
             branches:
-              only: master
-
+              only:
+                - master
