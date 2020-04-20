@@ -12,11 +12,13 @@ orbs:
 workflows:
   build_deploy:
     jobs:
-      - build:
-          steps:
-            - maven/test:
-                executor: java-version
+      - build
       - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           requires:
             - build
+
+jobs:
+  build:
+    executor: java-version
+      - maven/test
 
