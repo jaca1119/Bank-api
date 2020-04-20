@@ -9,6 +9,12 @@ orbs:
   maven: circleci/maven@1.0.0
   heroku: circleci/heroku@1.0.1
 
+jobs:
+  build:
+    executor: java-version
+      - maven/test
+
+
 workflows:
   build_deploy:
     jobs:
@@ -17,8 +23,5 @@ workflows:
           requires:
             - build
 
-jobs:
-  build:
-    executor: java-version
-      - maven/test
+
 
