@@ -1,9 +1,4 @@
 version: 2.1
-executors:
-  my-executor:
-    docker:
-      - image: cimg/openjdk:11.0.7
-
 
 orbs:
   maven: circleci/maven@1.0.0
