@@ -9,20 +9,24 @@ orbs:
   maven: circleci/maven@1.0.0
   heroku: circleci/heroku@1.0.1
 
-environment:
-  JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-  REGISTRATION_URL: ${REGISTRATION_URL}
-  MAIL_HOST: ${MAIL_HOST}
-  MAIL_PORT: spring.mail.port=${MAIL_PORT}
-  MAIL_USERNAME: ${MAIL_USERNAME}
-  MAIL_PASSWORD: ${MAIL_PASSWORD}
+jobs:
+  deploy:
+    docker:
+      - image: circleci/buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name:
+            Deploy app on Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
   build_deploy:
     jobs:
       - maven/test:
           executor: java-version
-      - heroku/deploy-via-git:
+      - deploy:
           requires:
             - maven/test
           filters:
