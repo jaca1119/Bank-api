@@ -22,7 +22,7 @@ import java.util.UUID;
 @Service
 public class RegistrationService
 {
-    @Value("registration.url")
+    @Value("${registration.url}")
     private String registrationUrl;
 
     private UserAppRepository userAppRepository;
