@@ -14,7 +14,10 @@ workflows:
     jobs:
       - maven/test:
               executor: java-version
-      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+      - heroku/deploy-via-git:
           requires:
             - maven/test
+          filters:
+            branches:
+              only: master
 

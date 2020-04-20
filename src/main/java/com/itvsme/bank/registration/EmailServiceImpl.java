@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class EmailServiceImpl implements EmailService
 {
-    @Value("spring.mail.username")
+    @Value("${spring.mail.username}")
     private String emailFrom;
     private JavaMailSender mailSender;
 
