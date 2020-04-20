@@ -16,5 +16,5 @@ workflows:
               executor: java-version
       - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           requires:
-            - build
+            - maven/test
 
