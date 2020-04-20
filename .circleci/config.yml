@@ -15,5 +15,6 @@ workflows:
 
 jobs:
   build:
-    - maven/test:
-        executor: java-version
+    steps:
+      - maven/test:
+          executor: java-version
