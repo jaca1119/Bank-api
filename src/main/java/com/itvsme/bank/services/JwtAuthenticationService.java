@@ -38,10 +38,8 @@ public class JwtAuthenticationService
 
     public JwtTokenResponse authenticate(JwtTokenRequest tokenRequest, String url) throws AuthenticationException
     {
-        System.out.println(SECRET_KEY);
-        log.info("Authenticate {}", tokenRequest);
         UserDetails userDetails = managerAuthentication(tokenRequest.getUsername(), tokenRequest.getPassword());
-        System.out.println(userDetails);
+
         String token = generateToken(userDetails.getUsername(), url);
 
         return new JwtTokenResponse(token);
