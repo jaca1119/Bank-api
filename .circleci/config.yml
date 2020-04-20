@@ -17,4 +17,4 @@ jobs:
   build:
     executor: java-version
     steps:
-      - maven/test
+      - run: maven/test
