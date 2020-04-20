@@ -3,7 +3,7 @@ version: 2.1
 executors:
   java-version:
     parameters:
-      tag: '11.0'
+      tag: 11.0
 
 orbs:
   maven: circleci/maven@1.0.0
