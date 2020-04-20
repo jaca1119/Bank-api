@@ -10,6 +10,6 @@ orbs:
 
 workflows:
   maven_test:
+    executor: java-version
     jobs:
-      - maven/test:
-          executor: java-version
+      - maven/test
