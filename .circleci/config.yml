@@ -1,7 +1,8 @@
 version: 2.1
 executors:
   my-executor:
-    tag: '11.0'
+    docker:
+      - image: cimg/openjdk:11.0.7
 
 
 orbs:
