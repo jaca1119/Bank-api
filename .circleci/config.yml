@@ -2,14 +2,14 @@ version: 2.1
 
 executors:
   java-version:
-    docker:
-      - image: 'cimg/openjdk:11.0.7'
+    parameters:
+      tag: '11.0'
 
 orbs:
   maven: circleci/maven@1.0.0
 
 workflows:
   maven_test:
-    executor: java-version
     jobs:
-      - maven/test
+      - maven/test:
+          executor: java-version
