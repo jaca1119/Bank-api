@@ -9,18 +9,19 @@ orbs:
   maven: circleci/maven@1.0.0
   heroku: circleci/heroku@1.0.1
 
+environment:
+  JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+  REGISTRATION_URL: ${REGISTRATION_URL}
+  MAIL_HOST: ${MAIL_HOST}
+  MAIL_PORT: spring.mail.port=${MAIL_PORT}
+  MAIL_USERNAME: ${MAIL_USERNAME}
+  MAIL_PASSWORD: ${MAIL_PASSWORD}
+
 workflows:
   build_deploy:
     jobs:
       - maven/test:
           executor: java-version
-          environment:
-            JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-            REGISTRATION_URL: ${REGISTRATION_URL}
-            MAIL_HOST: ${MAIL_HOST}
-            MAIL_PORT: spring.mail.port=${MAIL_PORT}
-            MAIL_USERNAME: ${MAIL_USERNAME}
-            MAIL_PASSWORD: ${MAIL_PASSWORD}
       - heroku/deploy-via-git:
           requires:
             - maven/test
