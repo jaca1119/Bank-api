@@ -1,0 +1,23 @@
+version: 2.1
+
+executors:
+  java-version:
+    docker:
+      - image: 'cimg/openjdk:11.0.7'
+
+orbs:
+  maven: circleci/maven@1.0.0
+  heroku: circleci/heroku@1.0.1
+
+workflows:
+  build_deploy:
+    jobs:
+      - maven/test:
+              executor: java-version
+      - heroku/deploy-via-git:
+          requires:
+            - maven/test
+          filters:
+            branches:
+              only: master
+
