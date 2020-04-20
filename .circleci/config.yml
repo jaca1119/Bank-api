@@ -10,13 +10,12 @@ orbs:
   heroku: circleci/heroku@1.0.1
 
 workflows:
-  maven_test:
+  build_deploy:
     jobs:
-      - build
+      - build:
+          - maven/test:
+              executor: java-version
+      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+          requires:
+            - build
 
-jobs:
-  build:
-    executor: java-version
-    steps:
-      - checkout
-      - maven/test
