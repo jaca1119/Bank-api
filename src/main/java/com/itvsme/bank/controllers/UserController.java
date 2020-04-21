@@ -2,32 +2,32 @@ package com.itvsme.bank.controllers;
 
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.repositories.UserAppRepository;
+import com.itvsme.bank.services.UserDataService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.AccessDeniedException;
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
 public class UserController
 {
-    private UserAppRepository userAppRepository;
+    private UserDataService userDataService;
 
-    public UserController(UserAppRepository userAppRepository)
+    public UserController(UserDataService userDataService)
     {
-        this.userAppRepository = userAppRepository;
+        this.userDataService = userDataService;
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<UserApp> getUser(@PathVariable Long id)
+    @GetMapping("/user-data")
+    public ResponseEntity<UserApp> getUserData(Principal principal)
     {
-        System.out.println(id);
-
-        Optional<UserApp> optionalUserApp = userAppRepository.findById(id);
-        System.out.println(optionalUserApp.get());
-        return optionalUserApp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok(userDataService.getUserData(principal));
     }
 }
