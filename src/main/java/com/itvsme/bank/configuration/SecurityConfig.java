@@ -52,7 +52,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void configure(WebSecurity web) throws Exception
     {
         web.ignoring()
-                .antMatchers(HttpMethod.GET, "/hi/**");
+                .antMatchers(HttpMethod.POST, "/authenticate", "/register")
+                .antMatchers(HttpMethod.GET, "/token")
+                .antMatchers("/h2-console/**")
+                .antMatchers("/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
     }
 
     @Override
@@ -63,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .cors(withDefaults())
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/authenticate", "/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/user-data").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -75,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://goofy-hugle-5739c9.netlify.com/"));
+        configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app/"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS"));
         configuration.setAllowCredentials(true);

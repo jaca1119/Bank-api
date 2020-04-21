@@ -1,47 +1,68 @@
 package com.itvsme.bank.registration;
 
 
+import com.itvsme.bank.models.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.models.user.UserDTO;
+import com.itvsme.bank.repositories.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class RegistrationService
 {
+    @Value("${registration.url}")
+    private String registrationUrl;
+
     private UserAppRepository userAppRepository;
     private PasswordEncoder passwordEncoder;
     private RegistrationTokenRepository tokenRepository;
     private EmailService emailService;
+    private AccountRepository accountRepository;
 
-    public RegistrationService(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, RegistrationTokenRepository tokenRepository, EmailService emailService)
+    public RegistrationService(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, RegistrationTokenRepository tokenRepository, EmailService emailService, AccountRepository accountRepository)
     {
         this.userAppRepository = userAppRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
+        this.accountRepository = accountRepository;
     }
 
     public void register(UserDTO userDTO) throws Exception
     {
         if (userNotExists(userDTO.getUsername()))
         {
-            UserApp userApp = new UserApp();
-            userApp.setUsername(userDTO.getUsername());
-            userApp.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            userApp.setEmail(userDTO.getEmail());
-            userApp.setEnabled(false);
-            userApp.setRole("USER");
+            UserApp userApp = createUser(userDTO);
 
             userAppRepository.save(userApp);
 
-            sendTokenInEmail(userApp, userDTO.getEmail());
+            Account account = new Account();
+            account.setCurrency("EUR");
+            account.setBalance(new BigDecimal(1000));
+            account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userApp.getId()));
+
+            accountRepository.save(account);
+
+            List<Account> accounts = new ArrayList<>();
+            accounts.add(account);
+
+            userApp.setAccounts(accounts);
+
+            userAppRepository.save(userApp);
+
+            sendRegistrationTokenInEmail(userApp, userDTO.getEmail());
         }
         else
         {
@@ -49,7 +70,24 @@ public class RegistrationService
         }
     }
 
-    private void sendTokenInEmail(UserApp userApp, String userEmail)
+    public void activateUser(String token) throws AccountEnablingException
+    {
+        Optional<RegistrationToken> registrationToken = tokenRepository.findByValue(token);
+
+        if (registrationToken.isPresent())
+        {
+            UserApp userApp = registrationToken.get().getUserApp();
+            userApp.setEnabled(true);
+
+            userAppRepository.save(userApp);
+        }
+        else
+        {
+            throw new AccountEnablingException("Something went wrong with account enabling");
+        }
+    }
+
+    private void sendRegistrationTokenInEmail(UserApp userApp, String userEmail)
     {
         String tokenValue = UUID.randomUUID().toString();
         RegistrationToken token = new RegistrationToken();
@@ -58,9 +96,9 @@ public class RegistrationService
 
         tokenRepository.save(token);
 
-        String url = "http://localhost:8080/token?value=" + tokenValue;
+        String urlWithToken = registrationUrl + "/token?value=" + tokenValue;
 
-        emailService.sendMail(userEmail, "Registration", url);
+        emailService.sendMail(userEmail, "Registration", urlWithToken);
     }
 
     private boolean userNotExists(@NotNull @NotEmpty String username)
@@ -68,5 +106,17 @@ public class RegistrationService
         Optional<UserApp> optionalUserApp = userAppRepository.findByUsername(username);
 
         return optionalUserApp.isEmpty();
+    }
+
+    private UserApp createUser(UserDTO userDTO)
+    {
+        UserApp userApp = new UserApp();
+        userApp.setUsername(userDTO.getUsername());
+        userApp.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userApp.setEmail(userDTO.getEmail());
+        userApp.setEnabled(false);
+        userApp.setRole("USER");
+
+        return userApp;
     }
 }
