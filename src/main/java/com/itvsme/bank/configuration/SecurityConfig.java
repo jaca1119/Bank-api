@@ -85,9 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app/"));
+        configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setMaxAge(Long.valueOf(3600));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS"));
         configuration.setAllowCredentials(true);
 
