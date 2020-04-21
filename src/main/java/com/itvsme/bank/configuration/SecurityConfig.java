@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void configure(WebSecurity web) throws Exception
     {
         web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS)
                 .antMatchers(HttpMethod.POST, "/authenticate", "/register")
                 .antMatchers(HttpMethod.GET, "/token")
                 .antMatchers("/h2-console/**")
