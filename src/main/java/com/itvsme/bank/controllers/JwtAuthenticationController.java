@@ -6,7 +6,6 @@ import com.itvsme.bank.models.jwt.JwtTokenRequest;
 import com.itvsme.bank.models.jwt.JwtTokenResponse;
 import com.itvsme.bank.services.JwtAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -30,13 +29,6 @@ public class JwtAuthenticationController
     public JwtAuthenticationController(JwtAuthenticationService authenticationService)
     {
         this.authenticationService = authenticationService;
-    }
-
-    @GetMapping("/get")
-    public ResponseEntity<String> get()
-    {
-        authenticationService.authenticate(new JwtTokenRequest(), "asd");
-        return ResponseEntity.ok("asd");
     }
 
     @PostMapping("/authenticate")
@@ -65,22 +57,20 @@ public class JwtAuthenticationController
     }
 
     @GetMapping("/refreshToken")
-    public ResponseEntity<?> refreshJWT(@RequestBody JwtRefreshToken refreshToken, HttpServletRequest request)
+    public ResponseEntity<?> refreshJWT(@RequestBody JwtRefreshToken refreshToken, HttpServletRequest request, HttpServletResponse response)
     {
-        Optional<JwtTokenResponse> accessToken = authenticationService.refreshToken(refreshToken, String.valueOf(request.getRequestURL()));
+        Optional<JwtTokenResponse> accessToken = authenticationService.refreshAccessToken(refreshToken, String.valueOf(request.getRequestURL()));
 
         if (accessToken.isPresent())
         {
-            Cookie accessTokenCookie = new Cookie("accessToken", accessToken.get().getToken());
-            accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setMaxAge(3 * 60 * 60);
-            accessTokenCookie.setPath("/");
+            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.get().getToken(), 3 * 60 * 60);
 
-            Cookie refreshTokenCookie = new Cookie("refreshToken", authenticationService.generateRefreshToken(refreshToken.getSubject(), request.getRequestURI()).getToken());
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setMaxAge(5 * 60 * 60);
-            accessTokenCookie.setPath("/");
+            Cookie refreshTokenCookie = createCookieWithToken("refreshToken",
+                    authenticationService.generateRefreshToken(refreshToken.getSubject(), request.getRequestURI()).getToken(),
+                    5 * 60 * 60);
 
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
 
             return ResponseEntity.ok().build();
         }

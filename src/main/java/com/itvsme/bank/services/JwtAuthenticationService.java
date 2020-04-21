@@ -68,7 +68,7 @@ public class JwtAuthenticationService
         }
     }
 
-    public Optional<JwtTokenResponse> refreshToken(JwtRefreshToken refreshToken, String url)
+    public Optional<JwtTokenResponse> refreshAccessToken(JwtRefreshToken refreshToken, String url)
     {
         JwtTokenResponse response = null;
         try
