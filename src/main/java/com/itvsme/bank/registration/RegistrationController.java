@@ -37,7 +37,7 @@ public class RegistrationController
     }
 
     @GetMapping("/token")
-    public String signUp(@RequestParam String value)
+    public String enableAccount(@RequestParam String value)
     {
         try
         {
