@@ -13,11 +13,10 @@ workflows:
   build_deploy:
     jobs:
       - maven/test:
-              executor: java-version
+          executor: java-version
       - heroku/deploy-via-git:
           requires:
             - maven/test
           filters:
             branches:
               only: master
-
