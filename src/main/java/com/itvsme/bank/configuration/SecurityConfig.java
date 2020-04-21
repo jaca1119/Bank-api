@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void configure(WebSecurity web) throws Exception
     {
         web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS)
                 .antMatchers(HttpMethod.POST, "/authenticate", "/register")
                 .antMatchers(HttpMethod.GET, "/token")
                 .antMatchers("/h2-console/**")
@@ -68,7 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
 
         http
-                .cors(withDefaults())
+                .cors()
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
@@ -86,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
         configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app/"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setMaxAge(Long.valueOf(3600));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS"));
         configuration.setAllowCredentials(true);
 
