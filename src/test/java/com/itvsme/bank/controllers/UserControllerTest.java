@@ -31,7 +31,8 @@ class UserControllerTest
         mockMvc.perform(get("/user-data")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Access-Control-Request-Method", "GET")
-                .header("Origin", "https://affectionate-carson-6417c5.netlify.app/"))
+                .header("Origin", "https://affectionate-carson-6417c5.netlify.app")
+                .header("Referer", "https://affectionate-carson-6417c5.netlify.app/"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
