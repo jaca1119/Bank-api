@@ -1,6 +1,9 @@
 package com.itvsme.bank.registration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import com.itvsme.bank.models.jwt.JwtTokenRequest;
+import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.services.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -27,6 +30,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,5 +54,27 @@ class RegistrationControllerTest
 
         mockMvc.perform(get("/token?value=" + tokenValue).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print())
                 .andExpect(content().string(containsString("Something")));
+    }
+
+    @Test
+    void testRegistrationCORS() throws Exception, AccountEnablingException
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("user");
+        userDTO.setPassword("pass");
+        userDTO.setEmail("asd@asd.com");
+
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(userDTO);
+
+        Mockito.doNothing().when(registrationService).register(isA(UserDTO.class));
+
+        mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Origin", "https://affectionate-carson-6417c5.netlify.app")
+                .content(json))
+                    .andExpect(status().isOk()).andDo(print())
+                    .andExpect(content().string(containsString("Registered")));
     }
 }

@@ -48,7 +48,7 @@ public class JwtAuthenticationController
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Authenticated");
         }
         catch (AuthenticationException e)
         {

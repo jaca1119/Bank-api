@@ -11,15 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,7 +37,7 @@ class JwtAuthenticationControllerTest
     private UserDetailsServiceImpl userDetailsService;
 
     @Test
-    void testPreflightOptions() throws Exception, AccountEnablingException
+    void testPostAuthenticate() throws Exception, AccountEnablingException
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,10 +52,36 @@ class JwtAuthenticationControllerTest
 
         mockMvc.perform(post("/authenticate")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Origin", "https://affectionate-carson-6417c5.netlify.app")
                 .characterEncoding("UTF8")
                 .content(json)
                 )
                 .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Authenticated")))
+                .andDo(print());
+    }
+
+    @Test
+    void testPreflightOptions() throws Exception, AccountEnablingException
+    {
+        mockMvc.perform(options("/authenticate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Origin", "https://affectionate-carson-6417c5.netlify.app")
+                .header("Access-Control-Request-Method", "POST")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void testEvilPreflightOptions() throws Exception
+    {
+        mockMvc.perform(options("/authenticate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Origin", "https://evil.com")
+                .header("Access-Control-Request-Method", "POST")
+        )
+                .andExpect(status().isForbidden())
                 .andDo(print());
     }
 }
