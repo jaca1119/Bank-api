@@ -56,7 +56,7 @@ public class JwtAuthenticationController
         }
     }
 
-    @GetMapping("/refreshToken")
+    @GetMapping("/refresh-token")
     public ResponseEntity<?> refreshJWT(@RequestBody JwtRefreshToken refreshToken, HttpServletRequest request, HttpServletResponse response)
     {
         Optional<JwtTokenResponse> accessToken = authenticationService.refreshAccessToken(refreshToken, String.valueOf(request.getRequestURL()));

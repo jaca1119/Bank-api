@@ -10,6 +10,7 @@ import com.itvsme.bank.services.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,8 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(JwtAuthenticationController.class)
 class JwtAuthenticationControllerTest
@@ -57,6 +57,7 @@ class JwtAuthenticationControllerTest
                 .content(json)
                 )
                 .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://affectionate-carson-6417c5.netlify.app"))
                 .andExpect(content().string(containsString("Authenticated")))
                 .andDo(print());
     }
@@ -70,6 +71,7 @@ class JwtAuthenticationControllerTest
                 .header("Access-Control-Request-Method", "POST")
                 )
                 .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://affectionate-carson-6417c5.netlify.app"))
                 .andDo(print());
     }
 

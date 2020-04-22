@@ -20,8 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
@@ -52,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void configure(WebSecurity web) throws Exception
     {
         web.ignoring()
-                .antMatchers(HttpMethod.POST, "/authenticate", "/register")
                 .antMatchers(HttpMethod.GET, "/token")
                 .antMatchers("/h2-console/**")
                 .antMatchers("/v2/api-docs",
@@ -72,8 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/authenticate").permitAll()
+                .antMatchers("/authenticate", "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/user-data").authenticated()
+                .antMatchers(HttpMethod.POST, "/refresh-token").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
