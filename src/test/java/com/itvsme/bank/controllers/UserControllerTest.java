@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
 import java.time.Instant;
@@ -37,7 +38,7 @@ class UserControllerTest
     private UserDataService userDataService;
 
     @Test
-    void testCORSRequest() throws Exception
+    void testCORSRequestWithJwtCookieAuthentication() throws Exception
     {
         String secretKey = ApplicationConstants.SECRET_KEY;
         Instant now = Instant.now();

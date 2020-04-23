@@ -82,6 +82,8 @@ class JwtAuthenticationControllerTest
                 )
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "https://affectionate-carson-6417c5.netlify.app"))
+                .andExpect(cookie().exists("accessToken"))
+                .andExpect(cookie().exists("refreshToken"))
                 .andExpect(content().string(containsString("Authenticated")))
                 .andDo(print());
     }

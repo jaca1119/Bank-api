@@ -1,16 +1,12 @@
 package com.itvsme.bank.controllers;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.itvsme.bank.models.jwt.JwtTokenRequest;
 import com.itvsme.bank.models.jwt.JwtTokenResponse;
 import com.itvsme.bank.services.JwtAuthenticationService;
 import com.itvsme.bank.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MarkerFactory;
-import org.slf4j.helpers.BasicMarker;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,14 +44,11 @@ public class JwtAuthenticationController
 
             log.info(Arrays.toString(request.getCookies()));
 
-            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 10 * 60);
+            HttpCookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 10 * 60);
 
-            Cookie refreshTokenCookie = createCookieWithToken("refreshToken", refreshToken.getToken(), 60 * 60);
+            HttpCookie refreshTokenCookie = createCookieWithToken("refreshToken", refreshToken.getToken(), 60 * 60);
 
-            response.addCookie(accessTokenCookie);
-            response.addCookie(refreshTokenCookie);
-
-            return ResponseEntity.ok("Authenticated");
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()).body("Authenticated");
         }
         catch (AuthenticationException e)
         {
@@ -77,16 +70,13 @@ public class JwtAuthenticationController
         {
             JwtTokenResponse accessToken = authenticationService.refreshAccessToken(refreshCookie.get(), String.valueOf(request.getRequestURL()), timeZone);
 
-            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 10 * 60);
+            HttpCookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 10 * 60);
 
-            Cookie refreshTokenCookie = createCookieWithToken("refreshToken",
+            HttpCookie refreshTokenCookie = createCookieWithToken("refreshToken",
                     authenticationService.generateRefreshToken(JwtUtils.getSubjectFromToken(accessToken.getToken()), request.getRequestURI(), timeZone).getToken(),
                     60 * 60);
 
-            response.addCookie(accessTokenCookie);
-            response.addCookie(refreshTokenCookie);
-
-            return ResponseEntity.ok("Token refreshed");
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()).body("Token refreshed");
         } catch (JWTVerificationException e)
         {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -112,13 +102,12 @@ public class JwtAuthenticationController
         return Optional.ofNullable(tokenCookie);
     }
 
-    private Cookie createCookieWithToken(String name, String token, int maxAge)
+    private HttpCookie createCookieWithToken(String name, String token, int maxAge)
     {
-        Cookie cookie = new Cookie(name, token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath("/");
-
-        return cookie;
+        return ResponseCookie.from(name, token)
+                .httpOnly(true)
+                .maxAge(maxAge)
+                .path("/")
+                .build();
     }
 }
