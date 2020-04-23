@@ -26,8 +26,17 @@ public class UserController
     }
 
     @GetMapping("/user-data")
-    public ResponseEntity<UserApp> getUserData(Principal principal)
+    public ResponseEntity<?> getUserData(Principal principal)
     {
-        return ResponseEntity.ok(userDataService.getUserData(principal));
+        Optional<UserApp> userData = userDataService.getUserData(principal);
+
+        if (userData.isPresent())
+        {
+            return ResponseEntity.ok(userData.get());
+        }
+        else
+        {
+            return ResponseEntity.badRequest().body("User not found");
+        }
     }
 }

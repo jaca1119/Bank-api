@@ -2,6 +2,7 @@ package com.itvsme.bank.services;
 
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.repositories.UserAppRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
@@ -19,10 +20,10 @@ public class UserDataService
         this.userAppRepository = userAppRepository;
     }
 
-    public UserApp getUserData(Principal principal)
+    public Optional<UserApp> getUserData(Principal principal)
     {
-        UserApp currentUser = (UserApp) principal;
+        Optional<UserApp> userApp = userAppRepository.findByUsername(principal.getName());
 
-        return userAppRepository.getOne(currentUser.getId());
+        return userApp;
     }
 }
