@@ -17,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -71,24 +72,15 @@ public class JwtAuthenticationService
         }
     }
 
-    public Optional<JwtTokenResponse> refreshAccessToken(JwtRefreshToken refreshToken, String url, TimeZone timeZone)
+    public JwtTokenResponse refreshAccessToken(Cookie cookie, String url, TimeZone timeZone) throws JWTVerificationException
     {
-        JwtTokenResponse response = null;
-        try
-        {
-            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
 
-            DecodedJWT decodedJWT = JWT.require(algorithm)
-                    .build()
-                    .verify(refreshToken.getRefreshToken());
+        DecodedJWT decodedJWT = JWT.require(algorithm)
+                .build()
+                .verify(cookie.getValue());
 
-            response = new JwtTokenResponse(generateToken(decodedJWT.getSubject(), url, timeZone));
-        }
-        catch (JWTVerificationException e)
-        {
-            response = null;
-        }
-        return Optional.ofNullable(response);
+        return new JwtTokenResponse(generateToken(decodedJWT.getSubject(), url, timeZone));
     }
 
     private String generateToken(String username, String url, TimeZone timeZone)
