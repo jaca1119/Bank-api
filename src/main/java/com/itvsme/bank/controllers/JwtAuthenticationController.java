@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -36,8 +38,9 @@ public class JwtAuthenticationController
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createJwtAuthenticationToken(@RequestBody JwtTokenRequest tokenRequest, HttpServletRequest request, HttpServletResponse response, TimeZone timeZone)
+    public ResponseEntity<String> createJwtAuthenticationToken(@RequestBody JwtTokenRequest tokenRequest, HttpServletRequest request, HttpServletResponse response, TimeZone timeZone)
     {
+        log.info("Request TimeZone is: {}, user current date time: {}", timeZone.getID(), ZonedDateTime.ofInstant(Instant.now(), timeZone.toZoneId()));
         try
         {
             JwtTokenResponse accessToken = authenticationService.authenticate(tokenRequest, String.valueOf(request.getRequestURL()), timeZone);
