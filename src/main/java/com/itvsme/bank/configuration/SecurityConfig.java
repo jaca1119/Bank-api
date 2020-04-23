@@ -20,8 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
@@ -52,8 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void configure(WebSecurity web) throws Exception
     {
         web.ignoring()
-                .antMatchers(HttpMethod.OPTIONS)
-                .antMatchers(HttpMethod.POST, "/authenticate", "/register")
                 .antMatchers(HttpMethod.GET, "/token")
                 .antMatchers("/h2-console/**")
                 .antMatchers("/v2/api-docs",
@@ -69,10 +65,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
 
         http
-                .cors(withDefaults())
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/authenticate", "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/user-data").authenticated()
+                .antMatchers(HttpMethod.POST, "/refresh-token").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -84,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app/"));
+        configuration.setAllowedOrigins(List.of("https://affectionate-carson-6417c5.netlify.app", "http://localhost:4200"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS"));
         configuration.setAllowCredentials(true);

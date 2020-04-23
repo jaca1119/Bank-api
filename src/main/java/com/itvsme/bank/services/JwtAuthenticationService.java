@@ -11,8 +11,6 @@ import com.itvsme.bank.models.jwt.JwtTokenResponse;
 import com.itvsme.bank.utils.ApplicationConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -20,8 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @Slf4j
@@ -36,25 +37,29 @@ public class JwtAuthenticationService
         this.authenticationManager = authenticationManager;
     }
 
-    public JwtTokenResponse authenticate(JwtTokenRequest tokenRequest, String url) throws AuthenticationException
+    public JwtTokenResponse authenticate(JwtTokenRequest tokenRequest, String url, TimeZone timeZone) throws AuthenticationException
     {
         UserDetails userDetails = managerAuthentication(tokenRequest.getUsername(), tokenRequest.getPassword());
 
-        String token = generateToken(userDetails.getUsername(), url);
+        String token = generateToken(userDetails.getUsername(), url, timeZone);
 
         return new JwtTokenResponse(token);
     }
 
-    public JwtTokenResponse generateRefreshToken(String subject, String url)
+    public JwtTokenResponse generateRefreshToken(String subject, String url, TimeZone timeZone)
     {
         try
         {
+            Instant now = Instant.now();
+
+            ZonedDateTime zonedDateTimeNow = ZonedDateTime.ofInstant(now, ZoneId.of(timeZone.getID()));
+
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             String token = JWT.create()
                     .withIssuer(url)
                     .withSubject(subject)
-                    .withIssuedAt(Date.from(Instant.now()))
-                    .withExpiresAt(Date.from(Instant.now().plusSeconds(60 * 60)))
+                    .withIssuedAt(Date.from(zonedDateTimeNow.toInstant()))
+                    .withExpiresAt(Date.from(zonedDateTimeNow.plusMinutes(60).toInstant()))
                     .sign(algorithm);
 
             return new JwtTokenResponse(token);
@@ -66,7 +71,7 @@ public class JwtAuthenticationService
         }
     }
 
-    public Optional<JwtTokenResponse> refreshAccessToken(JwtRefreshToken refreshToken, String url)
+    public Optional<JwtTokenResponse> refreshAccessToken(JwtRefreshToken refreshToken, String url, TimeZone timeZone)
     {
         JwtTokenResponse response = null;
         try
@@ -77,7 +82,7 @@ public class JwtAuthenticationService
                     .build()
                     .verify(refreshToken.getRefreshToken());
 
-            response = new JwtTokenResponse(generateToken(decodedJWT.getSubject(), url));
+            response = new JwtTokenResponse(generateToken(decodedJWT.getSubject(), url, timeZone));
         }
         catch (JWTVerificationException e)
         {
@@ -86,16 +91,20 @@ public class JwtAuthenticationService
         return Optional.ofNullable(response);
     }
 
-    private String generateToken(String username, String url)
+    private String generateToken(String username, String url, TimeZone timeZone)
     {
         try
         {
+            Instant now = Instant.now();
+
+            ZonedDateTime zonedDateTimeNow = ZonedDateTime.ofInstant(now, ZoneId.of(timeZone.getID()));
+
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             String token = JWT.create()
                     .withIssuer(url)
                     .withSubject(username)
-                    .withIssuedAt(Date.from(Instant.now()))
-                    .withExpiresAt(Date.from(Instant.now().plusSeconds(60 * 10)))
+                    .withIssuedAt(Date.from(zonedDateTimeNow.toInstant()))
+                    .withExpiresAt(Date.from(zonedDateTimeNow.plusMinutes(10).toInstant()))
                     .sign(algorithm);
 
             return token;

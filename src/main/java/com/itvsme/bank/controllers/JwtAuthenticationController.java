@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @RestController
 @Slf4j
@@ -32,23 +33,23 @@ public class JwtAuthenticationController
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createJwtAuthenticationToken(@RequestBody JwtTokenRequest tokenRequest, HttpServletRequest request, HttpServletResponse response)
+    public ResponseEntity<?> createJwtAuthenticationToken(@RequestBody JwtTokenRequest tokenRequest, HttpServletRequest request, HttpServletResponse response, TimeZone timeZone)
     {
         try
         {
-            JwtTokenResponse accessToken = authenticationService.authenticate(tokenRequest, String.valueOf(request.getRequestURL()));
-            JwtTokenResponse refreshToken = authenticationService.generateRefreshToken(tokenRequest.getUsername(), String.valueOf(request.getRequestURL()));
+            JwtTokenResponse accessToken = authenticationService.authenticate(tokenRequest, String.valueOf(request.getRequestURL()), timeZone);
+            JwtTokenResponse refreshToken = authenticationService.generateRefreshToken(tokenRequest.getUsername(), String.valueOf(request.getRequestURL()), timeZone);
 
             log.info(Arrays.toString(request.getCookies()));
 
-            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 3 * 60 * 60);
+            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.getToken(), 10 * 60);
 
-            Cookie refreshTokenCookie = createCookieWithToken("refreshToken", refreshToken.getToken(), 5 * 60 * 60);
+            Cookie refreshTokenCookie = createCookieWithToken("refreshToken", refreshToken.getToken(), 60 * 60);
 
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Authenticated");
         }
         catch (AuthenticationException e)
         {
@@ -56,18 +57,18 @@ public class JwtAuthenticationController
         }
     }
 
-    @GetMapping("/refreshToken")
-    public ResponseEntity<?> refreshJWT(@RequestBody JwtRefreshToken refreshToken, HttpServletRequest request, HttpServletResponse response)
+    @GetMapping("/refresh-token")
+    public ResponseEntity<?> refreshJWT(@RequestBody JwtRefreshToken refreshToken, HttpServletRequest request, HttpServletResponse response, TimeZone timeZone)
     {
-        Optional<JwtTokenResponse> accessToken = authenticationService.refreshAccessToken(refreshToken, String.valueOf(request.getRequestURL()));
+        Optional<JwtTokenResponse> accessToken = authenticationService.refreshAccessToken(refreshToken, String.valueOf(request.getRequestURL()), timeZone);
 
         if (accessToken.isPresent())
         {
-            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.get().getToken(), 3 * 60 * 60);
+            Cookie accessTokenCookie = createCookieWithToken("accessToken", accessToken.get().getToken(), 10 * 60);
 
             Cookie refreshTokenCookie = createCookieWithToken("refreshToken",
-                    authenticationService.generateRefreshToken(refreshToken.getSubject(), request.getRequestURI()).getToken(),
-                    5 * 60 * 60);
+                    authenticationService.generateRefreshToken(refreshToken.getSubject(), request.getRequestURI(), timeZone).getToken(),
+                    60 * 60);
 
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
