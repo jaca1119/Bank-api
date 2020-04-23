@@ -29,9 +29,6 @@ public class JwtFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
     {
-        String authorizationToken = request.getHeader("Authorization");
-        log.info("Request: {}", request);
-        log.info(Arrays.toString(request.getCookies()));
         System.out.println("FILTER");
 
         Cookie tokenCookie = null;
@@ -53,13 +50,14 @@ public class JwtFilter extends OncePerRequestFilter
         }
 
         chain.doFilter(request, response);
+        log.info("chain: {}, request: {}, response: {}", chain, request, response);
+
     }
 
     private void cookieAuthorization(Cookie cookie) throws IOException
     {
         UsernamePasswordAuthenticationToken auth = getTokenAuthentication(cookie.getValue());
 
-        log.info("Authorization cookie {}", auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
@@ -67,13 +65,13 @@ public class JwtFilter extends OncePerRequestFilter
     {
         Map<String, Claim> claims = JWT.require(Algorithm.HMAC256(SECRET_KEY))
                 .build()
-                .verify(token.replace("Bearer ", ""))
+                .verify(token)
                 .getClaims();
 
 
-        String name = claims.get("sub").toString();
+        String name = claims.get("sub").asString();
 //        String role = claims.get("role").asString();
-        Set<SimpleGrantedAuthority> simpleGrantedAuthority = Collections.singleton(new SimpleGrantedAuthority("ADMIN"));
+        Set<SimpleGrantedAuthority> simpleGrantedAuthority = Collections.singleton(new SimpleGrantedAuthority("USER"));
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                 = new UsernamePasswordAuthenticationToken(name, null, simpleGrantedAuthority);

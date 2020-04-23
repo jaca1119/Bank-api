@@ -2,10 +2,13 @@ package com.itvsme.bank.controllers;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.itvsme.bank.models.user.UserApp;
+import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.services.UserDataService;
 import com.itvsme.bank.services.UserDetailsServiceImpl;
 import com.itvsme.bank.utils.ApplicationConstants;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,12 +23,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest
@@ -37,16 +44,20 @@ class UserControllerTest
     @MockBean
     private UserDataService userDataService;
 
+    private final String secretKey = ApplicationConstants.SECRET_KEY;
+
+
     @Test
     void testCORSRequestWithJwtCookieAuthentication() throws Exception
     {
-        String secretKey = ApplicationConstants.SECRET_KEY;
-        Instant now = Instant.now();
+        UserApp userApp = new UserApp();
+        userApp.setUsername("User");
 
+        Instant now = Instant.now();
         ZonedDateTime zonedDateTimeNow = ZonedDateTime.ofInstant(now, TimeZone.getTimeZone("GMT+2").toZoneId());
 
         String jwt = JWT.create()
-                .withSubject("User")
+                .withSubject(userApp.getUsername())
                 .withIssuedAt(Date.from(zonedDateTimeNow.toInstant()))
                 .withExpiresAt(Date.from(zonedDateTimeNow.plusMinutes(10).toInstant()))
                 .sign(Algorithm.HMAC256(secretKey));
@@ -56,13 +67,17 @@ class UserControllerTest
         cookie.setMaxAge(10 * 60);
         cookie.setPath("/");
 
+        when(userDataService.getUserData(any())).thenReturn(Optional.of(userApp));
+
         mockMvc.perform(get("/user-data")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie(cookie)
+                .characterEncoding("UTF8")
                 .header("Access-Control-Request-Method", "GET")
                 .header("Origin", "https://affectionate-carson-6417c5.netlify.app"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "https://affectionate-carson-6417c5.netlify.app"))
+                .andExpect(content().string(containsString("User")))
                 .andDo(print());
     }
 
