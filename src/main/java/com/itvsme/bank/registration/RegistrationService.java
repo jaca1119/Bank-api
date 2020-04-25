@@ -53,7 +53,7 @@ public class RegistrationService
 
             Account account = new Account();
             account.setCurrency("EUR");
-            account.setBalance(new BigDecimal(1000));
+            account.setBalanceInHundredScale(1000 * 100);
             account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userApp.getId()));
 
             accountRepository.save(account);
