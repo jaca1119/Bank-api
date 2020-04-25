@@ -1,4 +1,4 @@
-package com.itvsme.bank.registration;
+package com.itvsme.bank.registration.exceptions;
 
 public class AccountEnablingException extends Throwable
 {

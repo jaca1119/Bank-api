@@ -1,14 +1,11 @@
 package com.itvsme.bank.registration;
 
 
-import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.models.user.UserDTO;
-import com.itvsme.bank.repositories.UserAppRepository;
+import com.itvsme.bank.registration.exceptions.AccountEnablingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 public class RegistrationController

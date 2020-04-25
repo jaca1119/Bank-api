@@ -4,16 +4,19 @@ package com.itvsme.bank.registration;
 import com.itvsme.bank.models.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.models.user.UserDTO;
+import com.itvsme.bank.registration.email.EmailService;
+import com.itvsme.bank.registration.exceptions.AccountEnablingException;
+import com.itvsme.bank.registration.utils.BusinessIdCreator;
 import com.itvsme.bank.repositories.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +90,7 @@ public class RegistrationService
         }
     }
 
-    private void sendRegistrationTokenInEmail(UserApp userApp, String userEmail)
+    private void sendRegistrationTokenInEmail(UserApp userApp, String userEmail) throws MailException
     {
         String tokenValue = UUID.randomUUID().toString();
         RegistrationToken token = new RegistrationToken();
