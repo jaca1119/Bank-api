@@ -1,7 +1,8 @@
-package com.itvsme.bank.registration;
+package com.itvsme.bank.registration.email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class EmailServiceImpl implements EmailService
     }
 
     @Override
-    public void sendMail(String to, String subject, String text)
+    public void sendMail(String to, String subject, String text) throws MailException
     {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
@@ -39,6 +40,7 @@ public class EmailServiceImpl implements EmailService
         } catch (MailException | MessagingException e)
         {
             e.printStackTrace();
+            throw new MailSendException(e.getMessage());
         }
     }
 }

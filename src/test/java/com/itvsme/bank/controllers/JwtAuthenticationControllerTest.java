@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itvsme.bank.models.jwt.JwtTokenRequest;
 import com.itvsme.bank.models.jwt.JwtTokenResponse;
-import com.itvsme.bank.registration.AccountEnablingException;
+import com.itvsme.bank.registration.exceptions.AccountEnablingException;
 import com.itvsme.bank.services.JwtAuthenticationService;
 import com.itvsme.bank.services.UserDetailsServiceImpl;
 import com.itvsme.bank.utils.ApplicationConstants;
@@ -15,17 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.result.PrintingResultHandler;
 
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
-import java.sql.Time;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.*;

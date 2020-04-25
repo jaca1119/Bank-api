@@ -1,4 +1,4 @@
-package com.itvsme.bank.registration;
+package com.itvsme.bank.registration.utils;
 
 public class BusinessIdCreator
 {
