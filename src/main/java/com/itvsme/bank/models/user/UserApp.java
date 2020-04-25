@@ -102,6 +102,7 @@ public class UserApp implements UserDetails
         this.role = role;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled()
     {
