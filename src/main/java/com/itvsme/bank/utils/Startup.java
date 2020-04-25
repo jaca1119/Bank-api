@@ -26,14 +26,14 @@ public class Startup
 
         Account account = new Account();
 //        BigDecimal.valueOf(1000.01234);
-        account.setBalance(new BigDecimal("1000.01234"));
+        account.setBalanceInHundredScale(100001);
         account.setCurrency("EUR");;
         account.setAccountBusinessId("123t");
 
         accountRepository.save(account);
 
         Account secondAccount = new Account();
-        secondAccount.setBalance(new BigDecimal("1000.1234"));
+        secondAccount.setBalanceInHundredScale(100012);
         secondAccount.setCurrency("EUR");
         secondAccount.setAccountBusinessId("321t");
 
