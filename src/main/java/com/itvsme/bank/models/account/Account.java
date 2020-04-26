@@ -2,11 +2,13 @@ package com.itvsme.bank.models.account;
 
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@NaturalIdCache
 public class Account
 {
     @Id
