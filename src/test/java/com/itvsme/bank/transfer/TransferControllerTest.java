@@ -25,6 +25,8 @@ public class TransferControllerTest
     @Autowired
     MockMvc mockMvc;
     @MockBean
+    TransferService transferService;
+    @MockBean
     UserDetailsServiceImpl userDetailsService;
 
     @Test
