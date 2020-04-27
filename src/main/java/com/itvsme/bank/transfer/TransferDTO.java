@@ -10,7 +10,10 @@ public class TransferDTO
     private long amountInHundredScale;
 
     private Timestamp transferDateTime;
-    private String zoneId;
+    private String zone;
+
+    private TransferType transferType;
+
 
     public String getFrom()
     {
@@ -52,13 +55,23 @@ public class TransferDTO
         this.transferDateTime = transferDateTime;
     }
 
-    public String getZoneId()
+    public String getZone()
     {
-        return zoneId;
+        return zone;
     }
 
-    public void setZoneId(String zoneId)
+    public void setZone(String zone)
     {
-        this.zoneId = zoneId;
+        this.zone = zone;
+    }
+
+    public TransferType getTransferType()
+    {
+        return transferType;
+    }
+
+    public void setTransferType(TransferType transferType)
+    {
+        this.transferType = transferType;
     }
 }

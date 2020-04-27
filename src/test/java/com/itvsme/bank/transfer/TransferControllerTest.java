@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,7 +37,7 @@ public class TransferControllerTest
         transferDTO.setTo("toKey");
         transferDTO.setAmountInHundredScale(100 * 100);
         transferDTO.setTransferDateTime(Timestamp.from(Instant.now()));
-        transferDTO.setZoneId("UTC");
+        transferDTO.setZone("UTC");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String transferJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(transferDTO);

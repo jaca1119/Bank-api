@@ -28,7 +28,13 @@ class AccountRepositoryTest
 
         Optional<Account> byNaturalId = accountRepository.findByNaturalId(account.getAccountBusinessId());
 
-        System.out.println(byNaturalId.get());
-        assertThat(byNaturalId.get()).isEqualTo(account);
+        if (byNaturalId.isPresent())
+        {
+            assertThat(byNaturalId.get()).isEqualTo(account);
+        }
+        else
+        {
+            fail("Account is not present.");
+        }
     }
 }
