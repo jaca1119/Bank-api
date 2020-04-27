@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/user-data").authenticated()
+                .antMatchers(HttpMethod.POST, "/transfer").authenticated()
                 .antMatchers(HttpMethod.GET, "/refresh-token").permitAll()
                 .anyRequest().authenticated()
                 .and()
