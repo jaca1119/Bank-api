@@ -1,8 +1,11 @@
 package com.itvsme.bank.configuration;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.itvsme.bank.utils.ApplicationConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +19,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter
 
         if (tokenCookie != null)
         {
-            cookieAuthorization(tokenCookie);
+            cookieAuthentication(tokenCookie);
         }
 
         chain.doFilter(request, response);
@@ -54,29 +56,40 @@ public class JwtFilter extends OncePerRequestFilter
 
     }
 
-    private void cookieAuthorization(Cookie cookie) throws IOException
+    private void cookieAuthentication(Cookie cookie)
     {
         UsernamePasswordAuthenticationToken auth = getTokenAuthentication(cookie.getValue());
 
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    private UsernamePasswordAuthenticationToken getTokenAuthentication(String token) throws IOException
+    private UsernamePasswordAuthenticationToken getTokenAuthentication(String token)
     {
-        Map<String, Claim> claims = JWT.require(Algorithm.HMAC256(SECRET_KEY))
-                .build()
-                .verify(token)
-                .getClaims();
+        DecodedJWT decodedJWT = decodeAndVerifyJwt(token);
 
+        String subject = decodedJWT.getSubject();
 
-        String name = claims.get("sub").asString();
-//        String role = claims.get("role").asString();
         Set<SimpleGrantedAuthority> simpleGrantedAuthority = Collections.singleton(new SimpleGrantedAuthority("USER"));
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                = new UsernamePasswordAuthenticationToken(name, null, simpleGrantedAuthority);
-        System.out.println(usernamePasswordAuthenticationToken);
+        return new UsernamePasswordAuthenticationToken(subject, null, simpleGrantedAuthority);
+    }
 
-        return usernamePasswordAuthenticationToken;
+    private DecodedJWT decodeAndVerifyJwt(String token)
+    {
+        DecodedJWT decodedJWT = null;
+        try
+        {
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET_KEY))
+                    .build();
+
+            decodedJWT = verifier.verify(token);
+
+        } catch (JWTVerificationException e)
+        {
+            //Invalid signature/token expired
+            e.printStackTrace();
+        }
+
+        return decodedJWT;
     }
 }
