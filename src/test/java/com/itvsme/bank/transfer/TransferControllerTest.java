@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.mock.mockito.SpyBeans;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +47,8 @@ public class TransferControllerTest
 
         ObjectMapper objectMapper = new ObjectMapper();
         String transferJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(transferDTO);
+
+        when(transferService.makeTransfer(any(TransferDTO.class))).thenReturn(true);
 
         mockMvc.perform(post("/transfer")
             .contentType(MediaType.APPLICATION_JSON)
