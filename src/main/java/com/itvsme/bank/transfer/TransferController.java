@@ -20,8 +20,8 @@ public class TransferController
     {
         if (transferService.makeTransfer(transferDTO))
         {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok("Transfer");
         }
-        return ResponseEntity.ok("Transfer");
+        return ResponseEntity.badRequest().build();
     }
 }
