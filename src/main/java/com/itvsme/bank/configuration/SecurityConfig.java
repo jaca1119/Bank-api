@@ -70,10 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/user-data").authenticated()
+                .antMatchers(HttpMethod.GET, "/user-data", "/transfers/account/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/transfer").authenticated()
                 .antMatchers(HttpMethod.GET, "/refresh-token").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

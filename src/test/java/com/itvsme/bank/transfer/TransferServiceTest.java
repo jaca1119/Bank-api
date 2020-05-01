@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -27,6 +29,8 @@ public class TransferServiceTest
     TransferService transferService;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    TransferRepository transferRepository;
     @Autowired
     UserAppRepository userAppRepository;
 
@@ -101,5 +105,26 @@ public class TransferServiceTest
         {
             fail();
         }
+    }
+
+    @Test
+    void testFindingTransfersByAccount()
+    {
+        Account account = TestUtils.createAccount(10000, "EUR", "test");
+        Account secondAccount = new Account();
+        secondAccount.setAccountBusinessId("TestKey");
+        accountRepository.saveAll(List.of(account, secondAccount));
+
+        TransferDTO transferDTO = new TransferDTO();
+        transferDTO.setAccount(account);
+
+        TransferDTO transferToSecondAccount = new TransferDTO();
+        transferToSecondAccount.setAccount(secondAccount);
+
+        transferRepository.saveAll(List.of(transferDTO, transferToSecondAccount));
+
+        Page<TransferDTO> allByAccount = transferRepository.findAllByAccount(account, PageRequest.of(0, 2));
+
+        assertThat(allByAccount).containsExactlyInAnyOrder(transferDTO);
     }
 }
