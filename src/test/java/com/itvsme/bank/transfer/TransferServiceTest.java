@@ -70,7 +70,11 @@ public class TransferServiceTest
             assertThat(accountToOptional.get().getBalanceInHundredScale()).isEqualTo(balanceInHundredScale + transferValue);
             assertThat(accountFromOptional.get().getBalanceInHundredScale()).isEqualTo(balanceInHundredScale - transferValue);
 
+            assertThat(transferRepository.findAllByAccount(accountFromOptional.get(), PageRequest.of(0, 2))).contains(transferRepository.getOne(1L));
+            assertThat(transferRepository.findAllByAccount(accountToOptional.get(), PageRequest.of(0, 2))).contains(transferRepository.getOne(2L));
+
             assertThat(accountRepository.count()).isEqualTo(2);
+            assertThat(transferRepository.count()).isEqualTo(2);
         }
         else
         {

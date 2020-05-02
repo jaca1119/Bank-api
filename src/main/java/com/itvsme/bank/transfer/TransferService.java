@@ -1,12 +1,14 @@
 package com.itvsme.bank.transfer;
 
 import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -41,6 +43,8 @@ public class TransferService
                 accountRepository.save(accountFrom);
                 accountRepository.save(accountTo);
 
+                saveTransferToAccounts(transferDTO, accountFrom, accountTo);
+
                 return true;
             }
         }
@@ -48,15 +52,55 @@ public class TransferService
         return false;
     }
 
+    public Page<TransferDTO> getAccountTransfersPage(Integer userId, Integer accountId, Principal principal)
+    {
+        Optional<UserApp> userById = userAppRepository.findById(Long.valueOf(userId));
+
+        Account searchedAccount = null;
+        if (userById.isPresent())
+        {
+            for (Account account : userById.get().getAccounts())
+            {
+                if (account.getId().equals(Long.valueOf(accountId)))
+                {
+                    searchedAccount = account;
+                    break;
+                }
+            }
+        }
+
+        return transferRepository.findAllByAccount(searchedAccount, PageRequest.of(0, 5));
+    }
+
     private boolean isTransferPossible(Account accountFrom, long amountInHundredScale)
     {
         return accountFrom.getBalanceInHundredScale() > amountInHundredScale;
     }
 
-    public Page<TransferDTO> getAccountTransfersPage(Integer id)
+    private void saveTransferToAccounts(TransferDTO transferFrom, Account from, Account to)
     {
-        Account account = accountRepository.getOne(Long.valueOf(id));
+        transferFrom.setAccount(from);
 
-        return transferRepository.findAllByAccount(account, PageRequest.of(0, 5));
+        transferRepository.save(transferFrom);
+
+        TransferDTO transferTo = copyTransfer(transferFrom);
+        transferTo.setAccount(to);
+
+        transferRepository.save(transferTo);
     }
+
+    private TransferDTO copyTransfer(TransferDTO transferDTO)
+    {
+        TransferDTO swap = new TransferDTO();
+        swap.setTo(transferDTO.getTo());
+        swap.setFrom(transferDTO.getFrom());
+        swap.setAmountInHundredScale(transferDTO.getAmountInHundredScale());
+        swap.setMessage(transferDTO.getMessage());
+        swap.setTransferDateTime(transferDTO.getTransferDateTime());
+        swap.setZone(transferDTO.getZone());
+        swap.setTransferType(transferDTO.getTransferType());
+
+        return swap;
+    }
+
 }

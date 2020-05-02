@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 public class TransferController
 {
@@ -24,9 +26,9 @@ public class TransferController
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/transfers/account/{id}")
-    public ResponseEntity<Page<TransferDTO>> getAccountTransfersPage(@PathVariable Integer id)
+    @GetMapping("/user/{userId}/account/{accountId}/transfers")
+    public ResponseEntity<Page<TransferDTO>> getAccountTransfersPage(@PathVariable Integer userId , @PathVariable Integer accountId, Principal principal)
     {
-        return ResponseEntity.ok(transferService.getAccountTransfersPage(id));
+        return ResponseEntity.ok(transferService.getAccountTransfersPage(userId, accountId, principal));
     }
 }
