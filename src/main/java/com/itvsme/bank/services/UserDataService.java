@@ -20,10 +20,8 @@ public class UserDataService
         this.userAppRepository = userAppRepository;
     }
 
-    public Optional<UserApp> getUserData(Principal principal)
+    public Optional<UserApp> getUser(Principal principal)
     {
-        Optional<UserApp> userApp = userAppRepository.findByUsername(principal.getName());
-
-        return userApp;
+        return userAppRepository.findByUsername(principal.getName());
     }
 }

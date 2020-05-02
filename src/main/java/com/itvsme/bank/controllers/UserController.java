@@ -1,17 +1,11 @@
 package com.itvsme.bank.controllers;
 
 import com.itvsme.bank.models.user.UserApp;
-import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.services.UserDataService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -28,7 +22,7 @@ public class UserController
     @GetMapping("/user-data")
     public ResponseEntity<?> getUserData(Principal principal)
     {
-        Optional<UserApp> userData = userDataService.getUserData(principal);
+        Optional<UserApp> userData = userDataService.getUser(principal);
 
         if (userData.isPresent())
         {

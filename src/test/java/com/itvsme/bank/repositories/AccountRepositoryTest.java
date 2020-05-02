@@ -1,6 +1,7 @@
 package com.itvsme.bank.repositories;
 
 import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

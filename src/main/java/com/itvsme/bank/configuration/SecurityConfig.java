@@ -51,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         web.ignoring()
                 .antMatchers(HttpMethod.GET, "/token")
-                .antMatchers("/h2-console/**")
                 .antMatchers("/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
@@ -70,10 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/user-data").authenticated()
+                .antMatchers(HttpMethod.GET, "/user-data", "/account/*/transfers").authenticated()
                 .antMatchers(HttpMethod.POST, "/transfer").authenticated()
                 .antMatchers(HttpMethod.GET, "/refresh-token").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

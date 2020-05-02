@@ -3,32 +3,25 @@ package com.itvsme.bank.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.itvsme.bank.models.user.UserApp;
-import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.services.UserDataService;
 import com.itvsme.bank.services.UserDetailsServiceImpl;
 import com.itvsme.bank.utils.ApplicationConstants;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -67,7 +60,7 @@ class UserControllerTest
         cookie.setMaxAge(10 * 60);
         cookie.setPath("/");
 
-        when(userDataService.getUserData(any())).thenReturn(Optional.of(userApp));
+        when(userDataService.getUser(any())).thenReturn(Optional.of(userApp));
 
         mockMvc.perform(get("/user-data")
                 .contentType(MediaType.APPLICATION_JSON)
