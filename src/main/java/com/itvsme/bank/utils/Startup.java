@@ -2,14 +2,11 @@ package com.itvsme.bank.utils;
 
 import com.itvsme.bank.models.account.Account;
 import com.itvsme.bank.models.user.UserApp;
-import com.itvsme.bank.repositories.AccountRepository;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 @Component

@@ -2,7 +2,7 @@ package com.itvsme.bank.transfer;
 
 import com.itvsme.bank.TestUtils;
 import com.itvsme.bank.models.account.Account;
-import com.itvsme.bank.repositories.AccountRepository;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +27,8 @@ public class TransferServiceTest
     TransferService transferService;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    TransferRepository transferRepository;
     @Autowired
     UserAppRepository userAppRepository;
 
@@ -68,7 +70,11 @@ public class TransferServiceTest
             assertThat(accountToOptional.get().getBalanceInHundredScale()).isEqualTo(balanceInHundredScale + transferValue);
             assertThat(accountFromOptional.get().getBalanceInHundredScale()).isEqualTo(balanceInHundredScale - transferValue);
 
+            assertThat(transferRepository.findAllByAccount(accountFromOptional.get(), PageRequest.of(0, 2))).contains(transferRepository.getOne(1L));
+            assertThat(transferRepository.findAllByAccount(accountToOptional.get(), PageRequest.of(0, 2))).contains(transferRepository.getOne(2L));
+
             assertThat(accountRepository.count()).isEqualTo(2);
+            assertThat(transferRepository.count()).isEqualTo(2);
         }
         else
         {
@@ -101,5 +107,26 @@ public class TransferServiceTest
         {
             fail();
         }
+    }
+
+    @Test
+    void testFindingTransfersByAccount()
+    {
+        Account account = TestUtils.createAccount(10000, "EUR", "test");
+        Account secondAccount = new Account();
+        secondAccount.setAccountBusinessId("TestKey");
+        accountRepository.saveAll(List.of(account, secondAccount));
+
+        TransferDTO transferDTO = new TransferDTO();
+        transferDTO.setAccount(account);
+
+        TransferDTO transferToSecondAccount = new TransferDTO();
+        transferToSecondAccount.setAccount(secondAccount);
+
+        transferRepository.saveAll(List.of(transferDTO, transferToSecondAccount));
+
+        Page<TransferDTO> allByAccount = transferRepository.findAllByAccount(account, PageRequest.of(0, 2));
+
+        assertThat(allByAccount).containsExactlyInAnyOrder(transferDTO);
     }
 }

@@ -1,9 +1,10 @@
 package com.itvsme.bank.transfer;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 public class TransferController
@@ -23,5 +24,11 @@ public class TransferController
             return ResponseEntity.ok("Transfer");
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/account/{accountId}/transfers")
+    public ResponseEntity<Page<TransferDTO>> getAccountTransfersPage(@PathVariable Integer accountId, Principal principal)
+    {
+        return ResponseEntity.ok(transferService.getAccountTransfersPage(accountId, principal));
     }
 }

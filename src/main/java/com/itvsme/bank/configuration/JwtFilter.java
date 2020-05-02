@@ -33,18 +33,7 @@ public class JwtFilter extends OncePerRequestFilter
     {
         System.out.println("FILTER");
 
-        Cookie tokenCookie = null;
-        if (request.getCookies() != null)
-        {
-            for (Cookie cookie : request.getCookies())
-            {
-                if (cookie.getName().equals("accessToken"))
-                {
-                    tokenCookie = cookie;
-                    break;
-                }
-            }
-        }
+        Cookie tokenCookie = getCookieWithAccessToken(request.getCookies());
 
         if (tokenCookie != null)
         {
@@ -72,6 +61,26 @@ public class JwtFilter extends OncePerRequestFilter
         Set<SimpleGrantedAuthority> simpleGrantedAuthority = Collections.singleton(new SimpleGrantedAuthority("USER"));
 
         return new UsernamePasswordAuthenticationToken(subject, null, simpleGrantedAuthority);
+    }
+
+    private Cookie getCookieWithAccessToken(Cookie[] cookies)
+    {
+        if (cookies == null)
+        {
+            return null;
+        }
+
+        Cookie tokenCookie = null;
+        for (Cookie cookie : cookies)
+        {
+            if (cookie.getName().equals("accessToken"))
+            {
+                tokenCookie = cookie;
+                break;
+            }
+        }
+
+        return tokenCookie;
     }
 
     private DecodedJWT decodeAndVerifyJwt(String token)

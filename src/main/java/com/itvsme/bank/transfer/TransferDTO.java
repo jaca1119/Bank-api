@@ -1,11 +1,25 @@
 package com.itvsme.bank.transfer;
 
+import com.itvsme.bank.models.account.Account;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Data
+@Entity
+@Table(name = "Transfer")
 public class TransferDTO
 {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "from_account")
     private String from;
+    @Column(name = "to_account")
     private String to;
+    private String message;
 
     private long amountInHundredScale;
 
@@ -14,64 +28,7 @@ public class TransferDTO
 
     private TransferType transferType;
 
-
-    public String getFrom()
-    {
-        return from;
-    }
-
-    public void setFrom(String from)
-    {
-        this.from = from;
-    }
-
-    public String getTo()
-    {
-        return to;
-    }
-
-    public void setTo(String to)
-    {
-        this.to = to;
-    }
-
-    public long getAmountInHundredScale()
-    {
-        return amountInHundredScale;
-    }
-
-    public void setAmountInHundredScale(long amountInHundredScale)
-    {
-        this.amountInHundredScale = amountInHundredScale;
-    }
-
-    public Timestamp getTransferDateTime()
-    {
-        return transferDateTime;
-    }
-
-    public void setTransferDateTime(Timestamp transferDateTime)
-    {
-        this.transferDateTime = transferDateTime;
-    }
-
-    public String getZone()
-    {
-        return zone;
-    }
-
-    public void setZone(String zone)
-    {
-        this.zone = zone;
-    }
-
-    public TransferType getTransferType()
-    {
-        return transferType;
-    }
-
-    public void setTransferType(TransferType transferType)
-    {
-        this.transferType = transferType;
-    }
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ACCOUNT_ID")
+    private Account account;
 }

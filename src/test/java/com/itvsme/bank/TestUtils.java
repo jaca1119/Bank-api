@@ -56,6 +56,7 @@ public class TestUtils
         TransferDTO transferDTO = new TransferDTO();
         transferDTO.setTo(toKey);
         transferDTO.setFrom(fromKey);
+        transferDTO.setMessage("Tested transfer");
         transferDTO.setAmountInHundredScale(transferValue);
         transferDTO.setTransferDateTime(Timestamp.from(Instant.now()));
         transferDTO.setZone("GMT+3");

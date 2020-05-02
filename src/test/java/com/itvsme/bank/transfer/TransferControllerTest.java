@@ -7,17 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.test.mock.mockito.SpyBeans;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,6 +43,7 @@ public class TransferControllerTest
         TransferDTO transferDTO = new TransferDTO();
         transferDTO.setFrom("fromKey");
         transferDTO.setTo("toKey");
+        transferDTO.setMessage("Test transfer");
         transferDTO.setAmountInHundredScale(100 * 100);
         transferDTO.setTransferDateTime(Timestamp.from(Instant.now()));
         transferDTO.setZone("UTC");
@@ -59,6 +62,21 @@ public class TransferControllerTest
             )
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
 
+
+    @Test
+    void testGetAccountTransferPage() throws Exception
+    {
+        Cookie jwtAuthCookie = TestUtils.createAuthenticationJwtCookie();
+
+        when(transferService.getAccountTransfersPage(any(Integer.class), any(Principal.class))).thenReturn(new PageImpl<>(List.of(TestUtils.createTransferDTO("Key", "key", 123))));
+
+        mockMvc.perform(get("/account/3/transfers")
+                .characterEncoding("UTF8")
+                .cookie(jwtAuthCookie)
+                .header("Origin", "https://affectionate-carson-6417c5.netlify.app"))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
