@@ -52,9 +52,9 @@ public class TransferService
         return false;
     }
 
-    public Page<TransferDTO> getAccountTransfersPage(Integer userId, Integer accountId, Principal principal)
+    public Page<TransferDTO> getAccountTransfersPage(Integer accountId, Principal principal)
     {
-        Optional<UserApp> userById = userAppRepository.findById(Long.valueOf(userId));
+        Optional<UserApp> userById = userAppRepository.findByUsername(principal.getName());
 
         Account searchedAccount = null;
         if (userById.isPresent())

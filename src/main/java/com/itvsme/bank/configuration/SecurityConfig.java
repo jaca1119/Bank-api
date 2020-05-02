@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/user-data", "/user/*/account/*/transfers").authenticated()
+                .antMatchers(HttpMethod.GET, "/user-data", "/account/*/transfers").authenticated()
                 .antMatchers(HttpMethod.POST, "/transfer").authenticated()
                 .antMatchers(HttpMethod.GET, "/refresh-token").permitAll()
                 .anyRequest().denyAll()

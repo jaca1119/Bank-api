@@ -70,9 +70,9 @@ public class TransferControllerTest
     {
         Cookie jwtAuthCookie = TestUtils.createAuthenticationJwtCookie();
 
-        when(transferService.getAccountTransfersPage(any(Integer.class), any(Integer.class), any(Principal.class))).thenReturn(new PageImpl<>(List.of(TestUtils.createTransferDTO("Key", "key", 123))));
+        when(transferService.getAccountTransfersPage(any(Integer.class), any(Principal.class))).thenReturn(new PageImpl<>(List.of(TestUtils.createTransferDTO("Key", "key", 123))));
 
-        mockMvc.perform(get("/user/1123/account/3/transfers")
+        mockMvc.perform(get("/account/3/transfers")
                 .characterEncoding("UTF8")
                 .cookie(jwtAuthCookie)
                 .header("Origin", "https://affectionate-carson-6417c5.netlify.app"))

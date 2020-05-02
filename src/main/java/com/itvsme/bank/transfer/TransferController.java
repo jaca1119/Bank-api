@@ -26,9 +26,9 @@ public class TransferController
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/user/{userId}/account/{accountId}/transfers")
-    public ResponseEntity<Page<TransferDTO>> getAccountTransfersPage(@PathVariable Integer userId , @PathVariable Integer accountId, Principal principal)
+    @GetMapping("/account/{accountId}/transfers")
+    public ResponseEntity<Page<TransferDTO>> getAccountTransfersPage(@PathVariable Integer accountId, Principal principal)
     {
-        return ResponseEntity.ok(transferService.getAccountTransfersPage(userId, accountId, principal));
+        return ResponseEntity.ok(transferService.getAccountTransfersPage(accountId, principal));
     }
 }
