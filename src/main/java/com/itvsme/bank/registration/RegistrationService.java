@@ -7,7 +7,7 @@ import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.registration.email.EmailService;
 import com.itvsme.bank.registration.exceptions.AccountEnablingException;
 import com.itvsme.bank.registration.utils.BusinessIdCreator;
-import com.itvsme.bank.repositories.AccountRepository;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

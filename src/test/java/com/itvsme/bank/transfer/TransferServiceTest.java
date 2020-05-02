@@ -2,7 +2,7 @@ package com.itvsme.bank.transfer;
 
 import com.itvsme.bank.TestUtils;
 import com.itvsme.bank.models.account.Account;
-import com.itvsme.bank.repositories.AccountRepository;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 

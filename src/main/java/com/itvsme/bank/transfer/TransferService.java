@@ -1,7 +1,7 @@
 package com.itvsme.bank.transfer;
 
 import com.itvsme.bank.models.account.Account;
-import com.itvsme.bank.repositories.AccountRepository;
+import com.itvsme.bank.repositories.account.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

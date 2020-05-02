@@ -51,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         web.ignoring()
                 .antMatchers(HttpMethod.GET, "/token")
-                .antMatchers("/h2-console/**")
                 .antMatchers("/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
