@@ -22,7 +22,7 @@ public class Startup
 
 
         Account account = new Account();
-//        BigDecimal.valueOf(1000.01234);
+        account.setName("First account");
         account.setBalanceInHundredScale(100001);
         account.setCurrency("EUR");;
         account.setAccountBusinessId("123t");
@@ -30,6 +30,7 @@ public class Startup
         accountRepository.save(account);
 
         Account secondAccount = new Account();
+        secondAccount.setName("Second Account");
         secondAccount.setBalanceInHundredScale(100012);
         secondAccount.setCurrency("EUR");
         secondAccount.setAccountBusinessId("321t");
