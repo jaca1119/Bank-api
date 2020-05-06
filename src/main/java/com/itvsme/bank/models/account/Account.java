@@ -15,6 +15,8 @@ public class Account
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private long balanceInHundredScale;
+    @Column(length = 64)
+    private String name;
     private String currency;
 
     @NaturalId
