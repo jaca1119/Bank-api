@@ -47,21 +47,15 @@ public class RegistrationService
         if (userNotExists(userDTO.getUsername()))
         {
             UserApp userApp = createUser(userDTO);
-
             userAppRepository.save(userApp);
 
-            Account account = new Account();
-            account.setCurrency("EUR");
-            account.setBalanceInHundredScale(1000 * 100);
-            account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userApp.getId()));
-
+            Account account = createFirstAccount(userApp.getId());
             accountRepository.save(account);
 
             List<Account> accounts = new ArrayList<>();
             accounts.add(account);
 
             userApp.setAccounts(accounts);
-
             userAppRepository.save(userApp);
 
             sendRegistrationTokenInEmail(userApp, userDTO.getEmail());
@@ -106,6 +100,8 @@ public class RegistrationService
     private boolean userNotExists(@NotNull @NotEmpty String username)
     {
         Optional<UserApp> optionalUserApp = userAppRepository.findByUsername(username);
+        System.out.println(optionalUserApp);
+        System.out.println(optionalUserApp.isEmpty());
 
         return optionalUserApp.isEmpty();
     }
@@ -120,5 +116,16 @@ public class RegistrationService
         userApp.setRole("USER");
 
         return userApp;
+    }
+
+    private Account createFirstAccount(Long userId)
+    {
+        Account account = new Account();
+        account.setName("First account");
+        account.setCurrency("EUR");
+        account.setBalanceInHundredScale(1000 * 100);
+        account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userId));
+
+        return account;
     }
 }
