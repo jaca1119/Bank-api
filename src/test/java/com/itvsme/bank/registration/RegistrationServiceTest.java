@@ -3,7 +3,7 @@ package com.itvsme.bank.registration;
 import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.registration.email.EmailService;
 import com.itvsme.bank.repositories.UserAppRepository;
-import com.itvsme.bank.repositories.account.AccountRepository;
+import com.itvsme.bank.account.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

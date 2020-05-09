@@ -1,7 +1,7 @@
 package com.itvsme.bank.models.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

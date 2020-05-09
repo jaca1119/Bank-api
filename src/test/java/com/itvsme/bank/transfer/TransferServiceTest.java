@@ -1,8 +1,8 @@
 package com.itvsme.bank.transfer;
 
 import com.itvsme.bank.TestUtils;
-import com.itvsme.bank.models.account.Account;
-import com.itvsme.bank.repositories.account.AccountRepository;
+import com.itvsme.bank.account.Account;
+import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

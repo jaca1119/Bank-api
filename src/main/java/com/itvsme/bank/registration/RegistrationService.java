@@ -1,13 +1,13 @@
 package com.itvsme.bank.registration;
 
 
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.registration.email.EmailService;
 import com.itvsme.bank.registration.exceptions.AccountEnablingException;
 import com.itvsme.bank.registration.utils.BusinessIdCreator;
-import com.itvsme.bank.repositories.account.AccountRepository;
+import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;

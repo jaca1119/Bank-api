@@ -2,7 +2,7 @@ package com.itvsme.bank;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.transfer.TransferDTO;
 import com.itvsme.bank.transfer.TransferType;
