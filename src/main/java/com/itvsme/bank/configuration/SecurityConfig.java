@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/user-data", "/account/*/transfers").authenticated()
-                .antMatchers(HttpMethod.POST, "/transfer").authenticated()
+                .antMatchers(HttpMethod.POST, "/transfer", "/account/create").authenticated()
                 .antMatchers(HttpMethod.GET, "/refresh-token").permitAll()
                 .anyRequest().denyAll()
                 .and()

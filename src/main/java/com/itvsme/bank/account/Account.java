@@ -1,4 +1,4 @@
-package com.itvsme.bank.models.account;
+package com.itvsme.bank.account;
 
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;

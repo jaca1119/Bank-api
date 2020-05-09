@@ -1,8 +1,8 @@
 package com.itvsme.bank.utils;
 
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
-import com.itvsme.bank.repositories.account.AccountRepository;
+import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,15 +27,11 @@ public class Startup
         account.setCurrency("EUR");;
         account.setAccountBusinessId("123t");
 
-        accountRepository.save(account);
-
         Account secondAccount = new Account();
         secondAccount.setName("Second Account");
         secondAccount.setBalanceInHundredScale(100012);
         secondAccount.setCurrency("EUR");
         secondAccount.setAccountBusinessId("321t");
-
-        accountRepository.save(secondAccount);
 
         userApp.setAccounts(List.of(account, secondAccount));
 
