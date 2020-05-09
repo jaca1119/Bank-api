@@ -1,6 +1,6 @@
-package com.itvsme.bank.repositories.account;
+package com.itvsme.bank.account.repository;
 
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;

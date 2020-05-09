@@ -1,13 +1,13 @@
 package com.itvsme.bank.registration;
 
 
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.registration.email.EmailService;
 import com.itvsme.bank.registration.exceptions.AccountEnablingException;
 import com.itvsme.bank.registration.utils.BusinessIdCreator;
-import com.itvsme.bank.repositories.account.AccountRepository;
+import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -49,7 +49,7 @@ public class RegistrationService
             UserApp userApp = createUser(userDTO);
             userAppRepository.save(userApp);
 
-            Account account = createFirstAccount(userApp.getId());
+            Account account = createFirstAccount();
             accountRepository.save(account);
 
             List<Account> accounts = new ArrayList<>();
@@ -118,13 +118,13 @@ public class RegistrationService
         return userApp;
     }
 
-    private Account createFirstAccount(Long userId)
+    private Account createFirstAccount()
     {
         Account account = new Account();
         account.setName("First account");
         account.setCurrency("EUR");
         account.setBalanceInHundredScale(1000 * 100);
-        account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userId));
+        account.setAccountBusinessId(BusinessIdCreator.createBusinessId());
 
         return account;
     }

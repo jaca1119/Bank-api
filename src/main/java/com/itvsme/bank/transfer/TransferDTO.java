@@ -1,6 +1,6 @@
 package com.itvsme.bank.transfer;
 
-import com.itvsme.bank.models.account.Account;
+import com.itvsme.bank.account.Account;
 import lombok.Data;
 
 import javax.persistence.*;

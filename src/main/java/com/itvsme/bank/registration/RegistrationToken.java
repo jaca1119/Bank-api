@@ -15,6 +15,6 @@ public class RegistrationToken
 
     private String value;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private UserApp userApp;
 }
