@@ -50,6 +50,7 @@ public class TransferServiceTest
     void tearDown()
     {
         accountRepository.deleteAll();
+        userAppRepository.deleteAll();
     }
 
     @Test

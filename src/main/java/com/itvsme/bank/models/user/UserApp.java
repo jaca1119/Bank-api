@@ -28,7 +28,7 @@ public class UserApp implements UserDetails
     @JsonIgnore
     private boolean isEnabled;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "USER_ID")
     private List<Account> accounts;
 

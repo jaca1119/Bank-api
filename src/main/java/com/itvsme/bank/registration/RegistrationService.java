@@ -49,7 +49,7 @@ public class RegistrationService
             UserApp userApp = createUser(userDTO);
             userAppRepository.save(userApp);
 
-            Account account = createFirstAccount(userApp.getId());
+            Account account = createFirstAccount();
             accountRepository.save(account);
 
             List<Account> accounts = new ArrayList<>();
@@ -118,13 +118,13 @@ public class RegistrationService
         return userApp;
     }
 
-    private Account createFirstAccount(Long userId)
+    private Account createFirstAccount()
     {
         Account account = new Account();
         account.setName("First account");
         account.setCurrency("EUR");
         account.setBalanceInHundredScale(1000 * 100);
-        account.setAccountBusinessId(BusinessIdCreator.createBusinessId(userId));
+        account.setAccountBusinessId(BusinessIdCreator.createBusinessId());
 
         return account;
     }

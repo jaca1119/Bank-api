@@ -27,15 +27,11 @@ public class Startup
         account.setCurrency("EUR");;
         account.setAccountBusinessId("123t");
 
-        accountRepository.save(account);
-
         Account secondAccount = new Account();
         secondAccount.setName("Second Account");
         secondAccount.setBalanceInHundredScale(100012);
         secondAccount.setCurrency("EUR");
         secondAccount.setAccountBusinessId("321t");
-
-        accountRepository.save(secondAccount);
 
         userApp.setAccounts(List.of(account, secondAccount));
 

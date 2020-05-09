@@ -12,7 +12,9 @@ import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class TestUtils
@@ -45,7 +47,7 @@ public class TestUtils
     {
         Account account = new Account();
         account.setBalanceInHundredScale(balanceInHundredScale);
-        account.setCurrency(currency);;
+        account.setCurrency(currency);
         account.setAccountBusinessId(businessId);
 
         return account;
@@ -63,5 +65,20 @@ public class TestUtils
         transferDTO.setTransferType(TransferType.INTERNAL);
 
         return transferDTO;
+    }
+
+    public static UserApp createUserApp(int numberOfAccounts)
+    {
+        UserApp userApp = new UserApp();
+        userApp.setUsername("Test");
+        List<Account> accounts = new ArrayList<>();
+        for (int i = 0; i < numberOfAccounts; i++)
+        {
+            accounts.add(createAccount(1000, "EUR", "test" + i));
+        }
+
+        userApp.setAccounts(accounts);
+
+        return userApp;
     }
 }
