@@ -3,16 +3,28 @@ package com.itvsme.bank.utils;
 import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
 import com.itvsme.bank.account.repository.AccountRepository;
+import com.itvsme.bank.registration.utils.BusinessIdCreator;
 import com.itvsme.bank.repositories.UserAppRepository;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class Startup
+public class Startup implements CommandLineRunner
 {
-    public Startup(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, AccountRepository accountRepository)
+    private final UserAppRepository userAppRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public Startup(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder)
+    {
+        this.userAppRepository = userAppRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void run(String... args) throws Exception
     {
         UserApp userApp = new UserApp();
         userApp.setUsername("User");
@@ -37,13 +49,20 @@ public class Startup
 
         userAppRepository.save(userApp);
 
+        UserApp pizzeria = new UserApp();
+        pizzeria.setUsername("pizzeria");
+        pizzeria.setPassword(passwordEncoder.encode("pizzeria"));
+        pizzeria.setEnabled(true);
+        pizzeria.setRole("USER");
 
-        UserApp user = new UserApp();
-        user.setUsername("us");
-        user.setPassword(passwordEncoder.encode("us"));
-        user.setEnabled(false);
-        user.setRole("USER");
+        Account pizzeriaAccount = new Account();
+        pizzeriaAccount.setName("Pizzeria");
+        pizzeriaAccount.setBalanceInHundredScale(0);
+        pizzeriaAccount.setCurrency("EUR");
+        pizzeriaAccount.setAccountBusinessId(BusinessIdCreator.createBusinessId());
 
-        userAppRepository.save(user);
+        pizzeria.setAccounts(List.of(pizzeriaAccount));
+
+        userAppRepository.save(pizzeria);
     }
 }

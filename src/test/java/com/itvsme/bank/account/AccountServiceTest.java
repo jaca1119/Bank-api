@@ -7,16 +7,13 @@ import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.services.UserDataService;
 import com.sun.security.auth.UserPrincipal;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.security.Principal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,8 +65,6 @@ class AccountServiceTest
         {
             fail();
         }
-
-
     }
 
     @Test
