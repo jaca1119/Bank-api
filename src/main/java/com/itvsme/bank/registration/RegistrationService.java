@@ -32,14 +32,16 @@ public class RegistrationService
     private RegistrationTokenRepository tokenRepository;
     private EmailService emailService;
     private AccountRepository accountRepository;
+    private BusinessIdCreator businessIdCreator;
 
-    public RegistrationService(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, RegistrationTokenRepository tokenRepository, EmailService emailService, AccountRepository accountRepository)
+    public RegistrationService(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, RegistrationTokenRepository tokenRepository, EmailService emailService, AccountRepository accountRepository, BusinessIdCreator businessIdCreator)
     {
         this.userAppRepository = userAppRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
         this.accountRepository = accountRepository;
+        this.businessIdCreator = businessIdCreator;
     }
 
     public void register(UserDTO userDTO) throws Exception
@@ -124,7 +126,7 @@ public class RegistrationService
         account.setName("First account");
         account.setCurrency("EUR");
         account.setBalanceInHundredScale(1000 * 100);
-        account.setAccountBusinessId(BusinessIdCreator.createBusinessId());
+        account.setAccountBusinessId(businessIdCreator.createBusinessId());
 
         return account;
     }

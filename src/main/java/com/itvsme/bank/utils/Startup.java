@@ -2,7 +2,6 @@ package com.itvsme.bank.utils;
 
 import com.itvsme.bank.account.Account;
 import com.itvsme.bank.models.user.UserApp;
-import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.registration.utils.BusinessIdCreator;
 import com.itvsme.bank.repositories.UserAppRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -16,11 +15,13 @@ public class Startup implements CommandLineRunner
 {
     private final UserAppRepository userAppRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BusinessIdCreator businessIdCreator;
 
-    public Startup(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder)
+    public Startup(UserAppRepository userAppRepository, PasswordEncoder passwordEncoder, BusinessIdCreator businessIdCreator)
     {
         this.userAppRepository = userAppRepository;
         this.passwordEncoder = passwordEncoder;
+        this.businessIdCreator = businessIdCreator;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class Startup implements CommandLineRunner
         pizzeriaAccount.setName("Pizzeria");
         pizzeriaAccount.setBalanceInHundredScale(0);
         pizzeriaAccount.setCurrency("EUR");
-        pizzeriaAccount.setAccountBusinessId(BusinessIdCreator.createBusinessId());
+        pizzeriaAccount.setAccountBusinessId(businessIdCreator.createBusinessId());
 
         pizzeria.setAccounts(List.of(pizzeriaAccount));
 

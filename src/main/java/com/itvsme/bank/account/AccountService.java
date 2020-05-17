@@ -22,12 +22,14 @@ public class AccountService
     private UserAppRepository userAppRepository;
     private UserDataService userDataService;
     private AccountRepository accountRepository;
+    private BusinessIdCreator businessIdCreator;
 
-    public AccountService(UserAppRepository userAppRepository, UserDataService userDataService, AccountRepository accountRepository)
+    public AccountService(UserAppRepository userAppRepository, UserDataService userDataService, AccountRepository accountRepository, BusinessIdCreator businessIdCreator)
     {
         this.userAppRepository = userAppRepository;
         this.userDataService = userDataService;
         this.accountRepository = accountRepository;
+        this.businessIdCreator = businessIdCreator;
     }
 
     public void createAccount(AccountCreateRequestDTO accountCreateRequestDTO, Principal user) throws UserPrincipalNotFoundException, CreatingAccountException
@@ -69,7 +71,7 @@ public class AccountService
         Account account = new Account();
         account.setName(accountCreateRequestDTO.getAccountName());
         account.setCurrency(accountCreateRequestDTO.getCurrency());
-        account.setAccountBusinessId(BusinessIdCreator.createBusinessId());
+        account.setAccountBusinessId(businessIdCreator.createBusinessId());
         account.setBalanceInHundredScale(INITIAL_ACCOUNT_BALANCE);
 
         return account;
