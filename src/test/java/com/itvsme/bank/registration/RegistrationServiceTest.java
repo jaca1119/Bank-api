@@ -2,6 +2,7 @@ package com.itvsme.bank.registration;
 
 import com.itvsme.bank.models.user.UserDTO;
 import com.itvsme.bank.registration.email.EmailService;
+import com.itvsme.bank.registration.utils.BusinessIdCreator;
 import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.account.repository.AccountRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +29,8 @@ class RegistrationServiceTest
     EmailService emailService;
     @MockBean
     UserAppRepository userAppRepository;
+    @SpyBean
+    BusinessIdCreator businessIdCreator;
 
     @AfterEach
     void tearDown()

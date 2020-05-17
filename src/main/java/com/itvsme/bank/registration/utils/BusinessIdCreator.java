@@ -1,16 +1,19 @@
 package com.itvsme.bank.registration.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 public class BusinessIdCreator
 {
-    private static final int CONTROL_SUM = 99;
-    private static final int BANK_CODE = 3333;
-    private static final int DEPARTMENT = 7777;
+    private final int CONTROL_SUM = 99;
+    private final int BANK_CODE = 3333;
+    private final int DEPARTMENT = 7777;
 
-    private static AtomicInteger id = new AtomicInteger(11111);
+    private AtomicInteger id = new AtomicInteger(11111);
 
-    public static String createBusinessId()
+    public String createBusinessId()
     {
         String idWithLeadingZeros = idWithLeadingZeros(id.getAndIncrement());
 
@@ -18,7 +21,7 @@ public class BusinessIdCreator
         return String.format("%d %d %d %s", CONTROL_SUM, BANK_CODE, DEPARTMENT, idWithLeadingZeros);
     }
 
-    private static String idWithLeadingZeros(int id)
+    private String idWithLeadingZeros(int id)
     {
         int leadingZeros = 16;
 

@@ -3,6 +3,7 @@ package com.itvsme.bank.account;
 import com.itvsme.bank.TestUtils;
 import com.itvsme.bank.account.repository.AccountRepository;
 import com.itvsme.bank.models.user.UserApp;
+import com.itvsme.bank.registration.utils.BusinessIdCreator;
 import com.itvsme.bank.repositories.UserAppRepository;
 import com.itvsme.bank.services.UserDataService;
 import com.sun.security.auth.UserPrincipal;
@@ -28,6 +29,8 @@ class AccountServiceTest
     AccountService accountService;
     @MockBean
     UserDataService userDataService;
+    @SpyBean
+    BusinessIdCreator businessIdCreator;
     @Autowired
     AccountRepository accountRepository;
     @Autowired
