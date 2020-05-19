@@ -113,7 +113,6 @@ public class RegistrationService
         UserApp userApp = new UserApp();
         userApp.setUsername(userDTO.getUsername());
         userApp.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        userApp.setEmail(userDTO.getEmail());
         userApp.setEnabled(false);
         userApp.setRole("USER");
 
