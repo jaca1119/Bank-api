@@ -22,8 +22,6 @@ public class UserApp implements UserDetails
     @JsonIgnore
     private String password;
     @JsonIgnore
-    private String email;
-    @JsonIgnore
     private String role;
     @JsonIgnore
     private boolean isEnabled;
@@ -109,16 +107,6 @@ public class UserApp implements UserDetails
         return isEnabled;
     }
 
-    public String getEmail()
-    {
-        return email;
-    }
-
-    public void setEmail(String email)
-    {
-        this.email = email;
-    }
-
     public void setEnabled(boolean enabled)
     {
         isEnabled = enabled;
@@ -141,7 +129,6 @@ public class UserApp implements UserDetails
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", isEnabled=" + isEnabled +
                 ", accounts=" + accounts +
