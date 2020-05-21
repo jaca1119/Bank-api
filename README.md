@@ -20,3 +20,4 @@ Backend for [Bank-angular](https://github.com/jaca1119/Bank-angular)
 - Spring Mail
 - Auth0 JWT
 - Swagger
+- Simple Jira scrum next gen project (writing tasks and assigning them to myself, creating sprints)
